@@ -15,71 +15,74 @@ struct Student{
 
 void addStudent(Student*& p, int& size){
     system("cls");
-    do{
-        int newID;
-        cout<<"Enter Student ID: ";
-        cin>>newID;
+    int* usedIDs = new int[size];
+    int usedIDCount = size;
 
-        int search = -1;
-        for(int i=0; i<size; i++){
-            if(p[i].id == newID){
-                search = i;
+    for (int i = 0; i < size; i++) {
+        usedIDs[i] = p[i].id;
+    }
+    do {
+        Student* students = new Student[size + 1];
+        int newID;
+        string name;
+        string lastname;
+        string course;
+        double gpa;
+
+            cout<< "Firstname: ";
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin>>name;
+            cout<< "Lastname: ";
+            cin>>lastname;
+            cout<< "Enter Course: ";
+            cin>>course;
+            cout<< "Enter GPA: ";
+            cin >>gpa;
+            do{
+            cout << "Enter Student ID: ";
+            cin >> newID;
+
+            int idExists = 0; 
+            for (int i = 0; i < usedIDCount; i++) {
+            if (usedIDs[i] == newID) {
+                idExists = 1;
                 break;
             }
+            break;
         }
-
-        cout<< endl;
-        if(search == -1){
-           Student* students = new Student[size + 1];
-           for(int i=0; i<size; i++){
+            if (idExists == 0){
+            for (int i = 0; i < size; i++) {
                 students[i] = p[i];
-           }
+            }
+            students[size].id = newID;
+            students[size].firstname = name;
+            students[size].lastname = lastname;
+            students[size].course= course;
+            students[size].gpa = gpa;
 
-           students[size].id = newID;
-           cout<<"Firstname: ";
-           cin>>students[size].firstname;
-           cin.ignore(numeric_limits<streamsize>::max(), '\n');
-           cout<<"Lastname: ";
-           cin>>students[size].lastname;
-           cin.ignore(numeric_limits<streamsize>::max(), '\n');
-           cout<<"Enter Course: ";
-           cin>>students[size].course;
-           cin.ignore(numeric_limits<streamsize>::max(), '\n');
-           cout<<"Enter GPA: ";
-           cin>>students[size].gpa;
+            delete[] p;
+            p = students;
+            size++;
 
-           delete[]p;
-           p = students;
-           size++;
-           cout<<"Student added successfully.."<<endl;
-           return;
-        }else{
-            do{
-            cout<<"Student with ID "<<newID<<" already exists.\n";
-            cout<<"Would you like to add a student [Y/N]?\n";
-            char opt;
-            cin>>opt;
-
-            switch(tolower(opt)){
-                case 'y':
-                break;
-
-                case 'n':
-                return;
-                break;
-
-                default:
-                if(cin.fail() || cin.peek() != '\n'){
-                    cin.clear();
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                    cout<<"Invalid input. Please enter valid option.\n";
-                    getch();
-                    continue;
-                }
+            int* tempUsedIDs = new int[usedIDCount + 1];
+            for (int i = 0; i < usedIDCount; i++) {
+                tempUsedIDs[i] = usedIDs[i];
+            }
+            tempUsedIDs[usedIDCount] = newID;
+            delete[] usedIDs;
+            usedIDs = tempUsedIDs;
+            usedIDCount++;
+            cout << "Student added successfully.." << endl;
+            return;
+            }
+            else{
+            cout << "Student ID "<<newID<<" is already exist. Enter new ID.\n";
+            cout<<endl;
             }
         }while(true);
-    }
-}while(true);
+    } while (true);
+    delete[] usedIDs;
+
 }
 
 void bubbleSort(Student* p, int size, int choice){
